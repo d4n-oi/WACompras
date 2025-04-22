@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">֎Danju</h1>
+        <p class="lead">Site de vizualização e manipulação de cadastros de Daniel e Julia.</p>
+    </section>
+
+    <div class="row">
+        <section class="col-md-4" aria-labelledby="carsTitle">
+            <h2 id="carsTitle">Gerencie seus Carros</h2>
+            <p>
+                Nosso site permite que você cadastre, edite, exclua e visualize detalhes dos seus veículos, proporcionando uma melhor organização e controle do seu acervo automotivo.
+            </p>
+            @Html.ActionLink("Lista de carros", "Listar", "Carro", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
+        </section>
+        <section class="col-md-4" aria-labelledby="phonesTitle">
+            <h2 id="phonesTitle">Gerencie seus Celulares</h2>
+            <p>
+                Cadastre e mantenha um registro organizado dos seus celulares, edite informações, remova itens desnecessários e visualize detalhes de cada aparelho com facilidade.
+            </p>
+            @Html.ActionLink("Lista de celulares", "Listar", "Celular", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
+        </section>
+        <section class="col-md-4" aria-labelledby="eventsTitle">
+            <h2 id="eventsTitle">Gerencie seus Eventos</h2>
+            <p>
+                Com nosso site, você pode cadastrar, editar, remover e visualizar eventos de forma detalhada, garantindo uma melhor organização e planejamento das suas atividades.
+            </p>
+            @Html.ActionLink("Lista de Eventos", "Listar", "Evento", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
+        </section>
+    </div>
+</main>
