@@ -1,8 +1,49 @@
-﻿/* Set padding to keep content from hitting the edges */
-.body-content {
+﻿@@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff7f3;
     margin-top: 15px;
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.bloco {
+    display: inline-block;
+    vertical-align: top;
+    padding: 20px;
+    margin: 10px;
+    background-color: #fef2ef;
+    width: 45%;
+    border-radius: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-control, .btn {
+    margin-top: 5px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.table {
+    font-family: 'Poppins', sans-serif;
+}
+
+.checked {
+    text-decoration: line-through;
+    opacity: 0.6;
+    color: #999;
+}
+
+.navbar-brand {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.5em;
 }
 
 .body {
@@ -22,4 +63,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+tr.checked {
+    text-decoration: line-through;
+    opacity: 0.6;
+    color: #999;
+}
+
 

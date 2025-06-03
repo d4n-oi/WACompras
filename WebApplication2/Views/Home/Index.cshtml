@@ -1,34 +1,36 @@
 ﻿@{
-    ViewBag.Title = "Home";
+    ViewBag.Title = "Início";
 }
 
 <main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">֎Danju</h1>
-        <p class="lead">Site de vizualização e manipulação de cadastros de Daniel e Julia.</p>
+    <section class="text-center mb-5">
+        <h1 id="title">֎ Danju Compras</h1>
+        <p class="lead">Gerencie suas listas de compras de forma rápida e prática.</p>
+        <p>Adicione itens, marque como comprados, exporte sua lista em PDF e mantenha tudo organizado!</p>
     </section>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="carsTitle">
-            <h2 id="carsTitle">Gerencie seus Carros</h2>
+    <div class="row text-center">
+        <section class="col-md-4 mb-4">
+            <h2>Visualize sua lista</h2>
             <p>
-                Nosso site permite que você cadastre, edite, exclua e visualize detalhes dos seus veículos, proporcionando uma melhor organização e controle do seu acervo automotivo.
+                Acompanhe todos os itens da sua lista de compras em tempo real. Veja os produtos por categoria e identifique facilmente o que já foi comprado.
             </p>
-            @Html.ActionLink("Lista de carros", "Listar", "Carro", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
+            @Html.ActionLink("Ver Lista de Compras", "Listar", "Compra", new { area = "" }, new { @class = "btn btn-outline-primary mt-2" })
         </section>
-        <section class="col-md-4" aria-labelledby="phonesTitle">
-            <h2 id="phonesTitle">Gerencie seus Celulares</h2>
+
+        <section class="col-md-4 mb-4">
+            <h2>Adicione novos itens</h2>
             <p>
-                Cadastre e mantenha um registro organizado dos seus celulares, edite informações, remova itens desnecessários e visualize detalhes de cada aparelho com facilidade.
+                Cadastre produtos com nome, categoria, quantidade e valor. Deixe sua lista completa antes de sair para as compras!
             </p>
-            @Html.ActionLink("Lista de celulares", "Listar", "Celular", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
         </section>
-        <section class="col-md-4" aria-labelledby="eventsTitle">
-            <h2 id="eventsTitle">Gerencie seus Eventos</h2>
+
+        <section class="col-md-4 mb-4">
+            <h2>Exporte em PDF</h2>
             <p>
-                Com nosso site, você pode cadastrar, editar, remover e visualizar eventos de forma detalhada, garantindo uma melhor organização e planejamento das suas atividades.
+                Gere um arquivo PDF com todos os itens da sua lista e leve no celular ou impresso para o supermercado. Simples, rápido e útil!
             </p>
-            @Html.ActionLink("Lista de Eventos", "Listar", "Evento", new { area = "" }, new { @class = "nav-link; btn btn-outline-info" })
+            @Html.ActionLink("Exportar Lista", "DownloadPdf", "Compra", new { area = "" }, new { @class = "btn btn-outline-danger mt-2" })
         </section>
     </div>
 </main>

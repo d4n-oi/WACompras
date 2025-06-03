@@ -1,0 +1,150 @@
+﻿@model IEnumerable<WebApplication2.Models.Compra>
+@{
+    var categorias = Model.Select(x => x.Categoria).Distinct().ToList();
+}
+
+<style>
+    .bloco {
+        display: inline-block;
+        vertical-align: top;
+        padding: 20px;
+        margin: 10px;
+        background-color: #fef2ef;
+        width: 45%;
+        border-radius: 15px;
+    }
+
+    .form-control, .btn {
+        margin-top: 5px;
+    }
+</style>
+
+<div class="bloco">
+    <h2>Novo Item</h2>
+    @using (Html.BeginForm("Create", "Compra", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.Label("Nome")
+            @Html.TextBox("Nome", null, new { @class = "form-control" })
+
+            @Html.Label("Preço")
+            @Html.TextBox("Preco", null, new { @class = "form-control", type = "number", step = "0.01" })
+
+            @Html.Label("Quantidade")
+            @Html.TextBox("Quantidade", 1, new { @class = "form-control", type = "number" })
+
+            @Html.Label("Categoria")
+            @Html.TextBox("Categoria", null, new { @class = "form-control" })
+
+            <button type="submit" class="btn btn-success mt-2">Adicionar</button>
+        </div>
+    }
+</div>
+
+<div class="bloco">
+    <h3>Itens</h3>
+
+    <form method="get">
+        <label for="filtro">Filtrar por categoria:</label>
+        <select name="filtro" onchange="this.form.submit()" class="form-control">
+            <option value="">Todas</option>
+            @foreach (var cat in categorias)
+            {
+                <option value="@cat" @(Request["filtro"] == cat ? "selected" : "")>@cat</option>
+            }
+        </select>
+    </form>
+
+    <table class="table table-striped mt-2">
+        <thead>
+            <tr>
+                <th>✓</th>
+                <th>Nome</th>
+                <th>R$</th>
+                <th>Qtd</th>
+                <th>Categoria</th>
+            </tr>
+        </thead>
+        <tbody>
+            @section Scripts {
+              <script>
+                    $(function () {
+                        $(".check-comprado").change(function () {
+                            var $checkbox = $(this);
+                            var id = $checkbox.data("id");
+                            var isChecked = $checkbox.is(":checked");
+                            var filtro = "@Request["filtro"]";
+
+                            $.post("/Compra/ToggleCompradoAjax", {
+                                id: id,
+                                filtro: filtro
+                            }, function (data) {
+                                if (data.sucesso) {
+                                    var $row = $checkbox.closest("tr");
+                                    $row.toggleClass("checked", isChecked);
+
+                                    $("#total").html("Total: R$ " + data.totalAtualizado);
+                                }
+                            }).fail(function() {
+                                alert("Ocorreu um erro ao atualizar o item.");
+                                $checkbox.prop("checked", !isChecked);
+                            });
+                        });
+
+                        
+                        $(document).on('click', '.btn-excluir', function(e) {
+                            e.preventDefault();
+                            if (confirm('Tem certeza?')) {
+                                var id = $(this).data('id');
+                                $.post('/Compra/DeleteAjax', { id: id }, function() {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    });
+              </script>
+            }
+
+            @foreach (var item in Model.Where(x => string.IsNullOrEmpty(Request["filtro"]) || x.Categoria == Request["filtro"]))
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" class="check-comprado" data-id="@item.Id"
+                               @(item.Comprado ? "checked" : "") />
+                    </td>
+                    <td>@item.Nome</td>
+                    <td>R$ @item.Preco</td>
+                    <td>@item.Quantidade</td>
+                    <td>@item.Categoria</td>
+                    <td>
+                        <button class="btn-excluir" data-id="@item.Id">🗑️</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @{
+        var filtro = Request["filtro"];
+        var listaFiltrada = string.IsNullOrEmpty(filtro)
+            ? Model
+            : Model.Where(c => c.Categoria == filtro).ToList();
+
+        var total = listaFiltrada.Where(c => !c.Comprado)
+                               .Sum(c => c.Preco * c.Quantidade);
+    }
+    <p id="total">Total: R$ @total.ToString("F2")</p>
+
+
+    @{
+        var filtroAtual = Request["filtro"];
+    }
+
+    <a href="@Url.Action("DownloadPdf", "Compra", new { filtro = filtroAtual, total = @total.ToString("F2") })" class="btn btn-outline-danger" style="font-family: 'Poppins', sans-serif;">
+        Baixar Lista em PDF
+    </a>
+
+</div>
+
+

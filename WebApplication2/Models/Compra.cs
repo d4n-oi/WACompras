@@ -2,78 +2,90 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication2.Models
 {
     public class Compra
     {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "O nome do produto é obrigatório.")]
         public string Nome { get; set; }
-        public Double Preco { get; set; }
+
+        [Required(ErrorMessage = "O preço é obrigatório.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "O preço deve ser maior que zero.")]
+        public double Preco { get; set; }
+
+        [Required(ErrorMessage = "A quantidade é obrigatória.")]
+        [Range(1, int.MaxValue, ErrorMessage = "A quantidade deve ser pelo menos 1.")]
         public int Quantidade { get; set; }
+
+        [Required(ErrorMessage = "A categoria é obrigatória.")]
         public string Categoria { get; set; }
 
-        //publico significa que oura classe pode utilizar esse metodo
+        public bool Comprado { get; set; }
+
+    public decimal Total => (decimal)Preco * Quantidade;
 
         public static void GerarLista(HttpSessionStateBase session)
         {
-            if (session["ListaCompra"] != null)
+            if (session["ListaCompra"] == null)
             {
-                if(((List<Compra>)session["ListaCompra"]).Count > 0);
+                var lista = new List<Compra>
                 {
-                    return;
-                }
-                //tem uma lista, num preisa de ota naum, só tem que dar um jeito de puxar ela
-            }
-            var lista = new List<Compra>();
-            lista.Add(new Compra {Nome = "Balinha", Preco = 1.90, Quantidade = 2, Categoria = "Comida"});
-            lista.Add(new Compra {Nome = "Frango", Preco = 19.90, Quantidade = 3, Categoria = "Comida"});
-            lista.Add(new Compra {Nome = "Paracetamal", Preco = 6.90, Quantidade = 2, Categoria = "Farmacia"});
-            lista.Add(new Compra {Nome = "Bolinha de borrahca", Preco = 8.50, Quantidade = 1, Categoria = "Pet"});
-            lista.Add(new Compra {Nome = "Vestido", Preco = 100.00, Quantidade = 1, Categoria = "Vestuario"});
-            lista.Add(new Compra {Nome = "Abajur de pato", Preco = 28.90, Quantidade = 2, Categoria = "Variedades"});
-            lista.Add(new Compra {Nome = "Carrinho", Preco = 12.90, Quantidade = 5, Categoria = "Brinquedos"});
-            lista.Add(new Compra {Nome = "Roupa de abelinha", Preco = 26.90, Quantidade = 1, Categoria = "Pet"});
-            lista.Add(new Compra {Nome = "Bambolê", Preco = 11.90, Quantidade = 1, Categoria = "Brinquedos"});
-            lista.Add(new Compra {Nome = "Caneta", Preco = 1.70, Quantidade = 3, Categoria = "Variedades"});
+                    new Compra { Nome = "Balinha", Preco = 1.90, Quantidade = 2, Categoria = "Comida" },
+                    new Compra { Nome = "Frango", Preco = 19.90, Quantidade = 3, Categoria = "Comida" },
+                    new Compra { Nome = "Paracetamal", Preco = 6.90, Quantidade = 2, Categoria = "Farmácia" },
+                    new Compra { Nome = "Bolinha de borracha", Preco = 8.50, Quantidade = 1, Categoria = "Pet" },
+                    new Compra { Nome = "Vestido", Preco = 100.00, Quantidade = 1, Categoria = "Vestuário" },
+                    new Compra { Nome = "Abajur de pato", Preco = 28.90, Quantidade = 2, Categoria = "Variedades" },
+                    new Compra { Nome = "Carrinho", Preco = 12.90, Quantidade = 5, Categoria = "Brinquedos" },
+                    new Compra { Nome = "Roupa de abelinha", Preco = 26.90, Quantidade = 1, Categoria = "Pet" },
+                    new Compra { Nome = "Bambolê", Preco = 11.90, Quantidade = 1, Categoria = "Brinquedos" },
+                    new Compra { Nome = "Caneta", Preco = 1.70, Quantidade = 3, Categoria = "Variedades" }
+                };
 
-            session.Remove("ListaCompra");
-            session.Add("   ", lista);
+                // Definir ID automaticamente
+                for (int i = 0; i < lista.Count; i++)
+                {
+                    lista[i].Id = i;
+                }
+
+                session["ListaCompra"] = lista;
+            }
         }
+
         public void Adicionar(HttpSessionStateBase session)
         {
-            if(session ["ListaCompra"] != null)
-            {
-                (session["ListaCompra"] as List<Compra>).Add(this);
-            }
+            var lista = session["ListaCompra"] as List<Compra>;
+            this.Id = lista.Count;
+            lista.Add(this);
         }
+
         public static Compra Procurar(HttpSessionStateBase session, int id)
         {
-            if (session["ListaCompra"] != null)
-            {
-                return (session["ListaCompra"] as List<Compra>).ElementAt(id);
-            }
-
-            return null;
-        }
-        public void Excluir(HttpSessionStateBase session)
-        {
-            if (session["ListaCompra"] != null)
-            {
-                (session["ListaCompra"] as List<Compra>).Remove(this);
-            }
+            var lista = session["ListaCompra"] as List<Compra>;
+            return lista.FirstOrDefault(c => c.Id == id);
         }
 
         public void Editar(HttpSessionStateBase session, int id)
         {
-            if (session["ListaCompra"] != null)
+            var lista = session["ListaCompra"] as List<Compra>;
+            var original = lista.FirstOrDefault(c => c.Id == id);
+            if (original != null)
             {
-                var compra = Compra.Procurar(session, id);
-                compra.Nome = this.Nome;
-                compra.Preco = this.Preco;
-                compra.Quantidade = this.Quantidade;    
-                compra.Categoria = this.Categoria;
+                original.Nome = this.Nome;
+                original.Preco = this.Preco;
+                original.Quantidade = this.Quantidade;
+                original.Categoria = this.Categoria;
             }
         }
 
+        public void Excluir(HttpSessionStateBase session)
+        {
+            var lista = session["ListaCompra"] as List<Compra>;
+            lista.RemoveAll(c => c.Id == this.Id);
+        }
     }
 }
